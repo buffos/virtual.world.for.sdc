@@ -1,5 +1,5 @@
 import Editor from "./editor";
-import Graph from "../math/graph";
+import Graph from "../../math/graph";
 import Point from "../primitives/point";
 import Segment from "../primitives/segment";
 import ViewPort from "../viewPort";

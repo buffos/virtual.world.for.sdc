@@ -1,5 +1,5 @@
-import { lerp } from "../math/utils";
-import { LocalStorageTree } from "../models/worldData";
+import { lerp } from "../../math/utils";
+import { LocalStorageTree } from "../../models/worldData";
 import Point from "../primitives/point";
 import Polygon from "../primitives/polygon";
 

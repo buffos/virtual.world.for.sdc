@@ -1,5 +1,5 @@
-import { lerp } from "../math/utils";
-import { LocalStoragePoint } from "../models/worldData";
+import { lerp } from "../../math/utils";
+import { LocalStoragePoint } from "../../models/worldData";
 
 interface PointDrawOptions {
   cap?: CanvasLineCap;

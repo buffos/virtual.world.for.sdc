@@ -1,6 +1,6 @@
 import { LocalStorageGraph } from "../models/worldData";
-import Point from "../primitives/point";
-import Segment from "../primitives/segment";
+import Point from "../world/primitives/point";
+import Segment from "../world/primitives/segment";
 
 export default class Graph {
   public points: Point[];

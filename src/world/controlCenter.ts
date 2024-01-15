@@ -1,6 +1,6 @@
 import Light from "./markings/light";
 import Marking from "./markings/marking";
-import { LocalStorageControlCenters } from "./models/worldData";
+import { LocalStorageControlCenters } from "../models/worldData";
 import Point from "./primitives/point";
 
 interface TrafficLightConfig {

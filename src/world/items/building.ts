@@ -1,4 +1,4 @@
-import { LocalStorageBuilding } from "../models/worldData";
+import { LocalStorageBuilding } from "../../models/worldData";
 import Point from "../primitives/point";
 import Polygon from "../primitives/polygon";
 

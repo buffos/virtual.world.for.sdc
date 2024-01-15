@@ -1,4 +1,4 @@
-import { LocalStorageMarking } from "../models/worldData";
+import { LocalStorageMarking } from "../../models/worldData";
 import Point from "../primitives/point";
 import Cross from "./crossing";
 import Light from "./light";

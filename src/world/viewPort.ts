@@ -1,4 +1,4 @@
-import { clamp } from "./math/utils";
+import { clamp } from "../math/utils";
 import Point from "./primitives/point";
 
 export default class ViewPort {

@@ -1,4 +1,4 @@
-import { LocalStorageSegment } from "../models/worldData";
+import { LocalStorageSegment } from "../../models/worldData";
 import Point from "./point";
 
 interface PointProjection {

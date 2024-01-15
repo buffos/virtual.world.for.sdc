@@ -1,16 +1,16 @@
-import CrossingEditor from "./editors/crossingEditor";
-import Editor from "./editors/editor";
-import GraphEditor from "./editors/graphEditor";
-import LightEditor from "./editors/lightEditor";
-import ParkingEditor from "./editors/parkingEditor";
-import StartEditor from "./editors/startEditor";
-import StopEditor from "./editors/stopEditor";
-import TargetEditor from "./editors/targetEditor";
-import YieldEditor from "./editors/yieldEditor";
+import CrossingEditor from "./world/editors/crossingEditor";
+import Editor from "./world/editors/editor";
+import GraphEditor from "./world/editors/graphEditor";
+import LightEditor from "./world/editors/lightEditor";
+import ParkingEditor from "./world/editors/parkingEditor";
+import StartEditor from "./world/editors/startEditor";
+import StopEditor from "./world/editors/stopEditor";
+import TargetEditor from "./world/editors/targetEditor";
+import YieldEditor from "./world/editors/yieldEditor";
 import Graph from "./math/graph";
-import Point from "./primitives/point";
-import ViewPort from "./viewPort";
-import World from "./world";
+import Point from "./world/primitives/point";
+import ViewPort from "./world/viewPort";
+import World from "./world/world";
 
 interface Tools {
   [key: string]: { button: HTMLButtonElement; editor: Editor | null };

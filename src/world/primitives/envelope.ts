@@ -1,4 +1,4 @@
-import { LocalStorageEnvelope } from "../models/worldData";
+import { LocalStorageEnvelope } from "../../models/worldData";
 import Point from "./point";
 import Polygon from "./polygon";
 import Segment from "./segment";
