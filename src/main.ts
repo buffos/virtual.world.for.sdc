@@ -11,23 +11,49 @@ import Graph from "./math/graph";
 import Point from "./world/primitives/point";
 import ViewPort from "./world/viewPort";
 import World from "./world/world";
+import Visualizer from "./car/visualizer";
+import CarWorld from "./car/carWorld";
 
 interface Tools {
   [key: string]: { button: HTMLButtonElement; editor: Editor | null };
 }
-type Mode = "graph" | "stop" | "crossing" | "start" | "parking" | "light" | "target" | "yield";
+type Mode = "drive" | "graph" | "stop" | "crossing" | "start" | "parking" | "light" | "target" | "yield";
 
-const myCanvas: HTMLCanvasElement = getCanvas("myCanvas", 800, 600);
+const carCanvas: HTMLCanvasElement = getCanvas("worldCanvas", window.innerWidth - 330, window.innerHeight);
+const netCanvas: HTMLCanvasElement = getCanvas("networkCanvas", 330, window.innerHeight);
+const networkCtx = netCanvas.getContext("2d") as CanvasRenderingContext2D;
 const world = load();
-const viewPort = new ViewPort(myCanvas, world.zoom, world.offset);
-const tools = prepareTools(viewPort, world.graph, world);
+const viewPort = new ViewPort(carCanvas, world.zoom, world.offset);
+const tools = prepareWorldTools(viewPort, world.graph, world);
 let currentMode: Mode = "graph";
 let oldGraphHash = world.graph.hash();
 
 setMode(currentMode);
+const carWorld = tools["drive"].editor as CarWorld;
+world.setCarWorld(carWorld);
+
 requestAnimationFrame(animate);
 
 function animate(timestamp: number) {
+  viewPort.offset.x = -carWorld.getBestCar().center.x;
+  viewPort.offset.y = -carWorld.getBestCar().center.y;
+  animateWorld(timestamp);
+  animateCarWorld(timestamp);
+  animateNeuralNetwork(timestamp);
+  requestAnimationFrame(animate);
+}
+
+function animateCarWorld(_: number) {
+  carWorld.update(world);
+}
+
+function animateNeuralNetwork(timestamp: number) {
+  networkCtx.lineDashOffset = -timestamp / 50;
+  networkCtx.clearRect(0, 0, netCanvas.width, netCanvas.height);
+  Visualizer.drawNetwork(networkCtx, carWorld.getBestCarBrain());
+}
+
+function animateWorld(timestamp: number) {
   viewPort.reset();
   if (world.graph.hash() != oldGraphHash) {
     world.generate();
@@ -38,7 +64,6 @@ function animate(timestamp: number) {
   world.draw(viewPort.ctx, viewPoint);
   viewPort.ctx.globalAlpha = 0.3;
   tools[currentMode].editor?.display();
-  requestAnimationFrame(animate);
 }
 
 function disableEditors() {
@@ -81,8 +106,9 @@ function loadFromFile(event: Event) {
   };
 }
 
-function prepareTools(viewPort: ViewPort, graph: Graph, world: World): Tools {
+function prepareWorldTools(viewPort: ViewPort, graph: Graph, world: World): Tools {
   const tools: Tools = {
+    drive: { button: document.getElementById("btnDrive") as HTMLButtonElement, editor: new CarWorld(viewPort, world, { NoOfCars: 100 }) },
     graph: { button: document.getElementById("btnGraphics") as HTMLButtonElement, editor: new GraphEditor(viewPort, graph) },
     stop: { button: document.getElementById("btnStop") as HTMLButtonElement, editor: new StopEditor(viewPort, world) },
     crossing: { button: document.getElementById("btnCross") as HTMLButtonElement, editor: new CrossingEditor(viewPort, world) },
@@ -95,6 +121,7 @@ function prepareTools(viewPort: ViewPort, graph: Graph, world: World): Tools {
   document.getElementById("btnDispose")?.addEventListener("click", () => dispose());
   document.getElementById("btnSave")?.addEventListener("click", () => save(viewPort, world));
   document.getElementById("fileInput")?.addEventListener("change", (event) => loadFromFile(event));
+  tools["drive"].button?.addEventListener("click", () => setMode("drive"));
   tools["graph"].button?.addEventListener("click", () => setMode("graph"));
   tools["stop"].button?.addEventListener("click", () => setMode("stop"));
   tools["yield"].button?.addEventListener("click", () => setMode("yield"));

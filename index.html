@@ -7,9 +7,8 @@
     <title>World Editor</title>
   </head>
   <body>
-    <h1>World Editor</h1>
-    <canvas id="myCanvas"></canvas>
-    <div id="controls">
+    <canvas id="worldCanvas"></canvas>
+    <div id="verticalButtons">
       <button id="btnDispose">🗑️</button>
       <button id="btnSave">💾</button>
       <label for="fileInput" class="btnLoad">
@@ -17,6 +16,7 @@
         <input type="file" id="fileInput" accept=".world" />
       </label>
       &nbsp;
+      <button id="btnDrive">🎮</button>
       <button id="btnGraphics">🌐</button>
       <button id="btnStop">🛑</button>
       <button id="btnYield">⚠️</button>
@@ -26,6 +26,7 @@
       <button id="btnStart">🚙</button>
       <button id="btnTarget">🎯</button>
     </div>
+    <canvas id="networkCanvas"></canvas>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

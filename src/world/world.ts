@@ -11,6 +11,8 @@ import Envelope from "./primitives/envelope";
 import Point from "./primitives/point";
 import Polygon from "./primitives/polygon";
 import Segment from "./primitives/segment";
+import CarWorld from "../car/carWorld";
+import Start from "./markings/start";
 
 interface WorldOptions {
   buildingMinLength?: number;
@@ -22,6 +24,8 @@ interface WorldOptions {
 }
 
 export default class World {
+  private carWorld: CarWorld | null = null;
+
   public buildingMinLength: number;
   public buildingWidth: number;
   public buildings: Building[] = [];
@@ -95,6 +99,8 @@ export default class World {
       segment.draw(ctx, { color: "white", width: 4 });
     }
 
+    this.carWorld?.display();
+
     const items = [...this.buildings, ...this.trees];
     // we sort the items by their distance to the view point so that the closest item is drawn last
     items.sort((a, b) => Polygon.distanceToPoint(b.base, viewPoint) - Polygon.distanceToPoint(a.base, viewPoint));
@@ -102,6 +108,7 @@ export default class World {
       item.draw(ctx, viewPoint);
     }
     for (const marking of this.markings) {
+      if (this.carWorld?.isEnabled() && marking instanceof Start) continue;
       marking.draw(ctx);
     }
   }
@@ -136,6 +143,10 @@ export default class World {
 
   public saveToLocalStorage(name: string = "world") {
     window.localStorage.setItem(name, JSON.stringify(this));
+  }
+
+  public setCarWorld(carWorld: CarWorld) {
+    this.carWorld = carWorld;
   }
 
   /**
