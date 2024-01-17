@@ -1,6 +1,5 @@
 import Graph from "../world/math/graph";
 import Point from "../world/primitives/point";
-import World from "../world/world";
 
 export default class MiniMap {
   public canvas: HTMLCanvasElement;
@@ -14,12 +13,14 @@ export default class MiniMap {
     this.canvas.height = size;
   }
 
-  setSize(size: number) {
-    this.canvas.width = size;
-    this.canvas.height = size;
-  }
-
-  animate(timestamp: number, graph: Graph, viewPoint: Point) {
+  /**
+   * Animates the minimap.
+   *
+   * @param timestamp - The current timestamp.
+   * @param graph - The graph to be displayed on the minimap.
+   * @param viewPoint - The current view point.
+   */
+  public animate(timestamp: number, graph: Graph, viewPoint: Point) {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const scaler = 0.1;
     const scaledViewPoint = Point.scaleVector(viewPoint, scaler);
@@ -31,5 +32,14 @@ export default class MiniMap {
     }
     this.ctx.restore();
     new Point(this.canvas.width / 2, this.canvas.height / 2).draw(this.ctx, { size: 1.2 / scaler, color: "blue", outline: true });
+  }
+
+  /**
+   * Sets the size of the canvas.
+   * @param size - The desired size of the canvas.
+   */
+  public setSize(size: number) {
+    this.canvas.width = size;
+    this.canvas.height = size;
   }
 }

@@ -15,6 +15,22 @@ export default class Building {
     this.height = height;
   }
 
+  /**
+   * Loads a Building object from local storage data.
+   * @param data - The local storage data representing the Building.
+   * @returns The loaded Building object.
+   */
+  public static load(data: LocalStorageBuilding): Building {
+    const base = Polygon.load(data.base);
+    return new Building(base, { height: data.height });
+  }
+
+  /**
+   * Draws the building on the canvas.
+   *
+   * @param ctx - The canvas rendering context.
+   * @param viewPoint - The viewpoint from which the building is being viewed.
+   */
   public draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
     // ceiling
     const topPoints = this.base.points.map((p) => Point.getFake3dPoint(p, viewPoint, this.height * 0.6));
@@ -49,10 +65,5 @@ export default class Building {
     for (const poly of roofPolygons) {
       poly.draw(ctx, { fill: "#D44", stroke: "#C44", lineWidth: 8, join: "round" });
     }
-  }
-
-  static load(data: LocalStorageBuilding): Building {
-    const base = Polygon.load(data.base);
-    return new Building(base, { height: data.height });
   }
 }

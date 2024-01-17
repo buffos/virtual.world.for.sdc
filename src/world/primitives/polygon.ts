@@ -1,4 +1,4 @@
-import { getIntersection, getRandomColor } from "../../utils/utils";
+import { getIntersection } from "../../utils/utils";
 import { LocalStoragePolygon } from "../../models/worldData";
 import Point from "./point";
 import Segment from "./segment";
@@ -102,6 +102,11 @@ export default class Polygon {
       }
     }
     return false;
+  }
+
+  public static load(data: LocalStoragePolygon): Polygon {
+    const points = data.points.map((point) => Point.load(point));
+    return new Polygon(points);
   }
 
   /**
@@ -208,10 +213,5 @@ export default class Polygon {
     for (let i = 0; i < this.points.length; i++) {
       this.segments.push(new Segment(this.points[i], this.points[(i + 1) % this.points.length]));
     }
-  }
-
-  static load(data: LocalStoragePolygon): Polygon {
-    const points = data.points.map((point) => Point.load(point));
-    return new Polygon(points);
   }
 }

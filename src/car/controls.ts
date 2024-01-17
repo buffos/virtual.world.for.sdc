@@ -21,6 +21,9 @@ export default class Controls {
     }
   }
 
+  /**
+   * Adds keyboard event listeners to control the car's movements.
+   */
   #addKeyboardListeners(): void {
     document.addEventListener("keydown", (event: KeyboardEvent) => {
       switch (event.key) {

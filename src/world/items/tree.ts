@@ -34,6 +34,12 @@ export default class Tree {
     return new Tree(center, { size: data.size, heightCoefficient: data.heightCoefficient, levelCount: data.levelCount });
   }
 
+  /**
+   * Draws the tree on the canvas.
+   *
+   * @param ctx - The canvas rendering context.
+   * @param viewPoint - The viewpoint from which the tree is being viewed.
+   */
   public draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
     const diff = Point.subVector(this.center, viewPoint);
     const top = Point.addVector(this.center, Point.scaleVector(diff, this.heightCoefficient));
@@ -48,6 +54,12 @@ export default class Tree {
     }
   }
 
+  /**
+   * Generates a level for the tree based on the given point and size.
+   * @param point The starting point of the level.
+   * @param size The size of the level.
+   * @returns A polygon representing the generated level.
+   */
   #generateLevel(point: Point, size: number): Polygon {
     const points = [];
     const rad = size / 2;

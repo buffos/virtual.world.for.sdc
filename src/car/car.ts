@@ -65,6 +65,12 @@ export default class Car {
     };
   }
 
+  /**
+   * Draws the car on the canvas.
+   *
+   * @param ctx - The canvas rendering context.
+   * @param drawSensor - Whether to draw the sensor or not. Default is false.
+   */
   public draw(ctx: CanvasRenderingContext2D, drawSensor = false) {
     drawSensor && this.sensor?.draw(ctx);
     ctx.save();
@@ -78,6 +84,14 @@ export default class Car {
     ctx.restore();
   }
 
+  /**
+   * Updates the car's state based on the given road borders and traffic cars.
+   * If the car is not damaged, it moves, updates its fitness, creates a polygon,
+   * and assesses damage. If a sensor is present, it updates the sensor readings
+   * and uses the neural network brain to control the car's movements.
+   * @param roadBorders - The road borders.
+   * @param trafficCars - The traffic cars.
+   */
   public update(roadBorders: Segment[], trafficCars: Car[]) {
     if (!this.damaged) {
       this.#move();
@@ -98,6 +112,12 @@ export default class Car {
     }
   }
 
+  /**
+   * Assess the damage of the car by checking for collisions with road borders and traffic cars.
+   * @param roadBorders - The road borders to check for collisions.
+   * @param trafficCars - The traffic cars to check for collisions.
+   * @returns True if there is a collision, false otherwise.
+   */
   #assessDamage(roadBorders: Segment[], trafficCars: Car[]) {
     for (let roadBorder of roadBorders) {
       if (Polygon.intersection(this.polygon, new Polygon([roadBorder.p1, roadBorder.p2]))) {
@@ -113,6 +133,11 @@ export default class Car {
     return false;
   }
 
+  /**
+   * Creates a polygon based on the car's dimensions and angle.
+   * @private
+   * @returns {Polygon} The created polygon.
+   */
   #createPolygon() {
     const rad = Math.hypot(this.width, this.height) / 2;
     const alpha = Math.atan2(this.width, this.height);
@@ -126,6 +151,9 @@ export default class Car {
     return new Polygon(points);
   }
 
+  /**
+   * Moves the car based on the current controls, speed, and angle.
+   */
   #move() {
     // controls change speed
     if (this.controls.forward) {

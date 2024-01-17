@@ -60,6 +60,10 @@ export default class UI {
     document.getElementById("btnGenerate")?.setAttribute("style", "background-color: " + (this.generate ? "green" : "red"));
   }
 
+  /**
+   * Loads data from a file and initializes the UI with the loaded data.
+   * @param event - The event object triggered by the file input.
+   */
   public loadFromFile(event: Event) {
     const file = (event.target as HTMLInputElement).files?.item(0);
     if (!file) {
@@ -75,10 +79,21 @@ export default class UI {
     };
   }
 
+  /**
+   * Starts the animation loop.
+   */
   public start() {
     requestAnimationFrame(this.#animate.bind(this));
   }
 
+  /**
+   * Animates the UI based on the current mode.
+   * If the current mode is "drive", it updates the viewPort offset based on the best car's center.
+   * It also updates the world zoom based on the viewPort zoom.
+   * Then it calls the necessary animation methods for the world, carWorld, neural network, and mini map.
+   * Finally, it requests the next animation frame.
+   * @param timestamp The current timestamp.
+   */
   #animate(timestamp: number) {
     if (this.currentMode === "drive") {
       this.viewPort.offset.x = -this.carWorld.getBestCar().center.x;
@@ -92,18 +107,38 @@ export default class UI {
     requestAnimationFrame(this.#animate.bind(this));
   }
 
+  /**
+   * Updates the car world animation.
+   *
+   * @param _ The number of frames to animate.
+   */
   #animateCarWorld(_: number) {
     this.carWorld.update(this.world);
   }
 
+  /**
+   * Animates the mini map.
+   *
+   * @param timestamp - The current timestamp.
+   */
   #animateMiniMap(timestamp: number) {
     this.miniMap.animate(timestamp, this.world.graph, this.viewPort.viewPoint);
   }
 
+  /**
+   * Animates the neural network.
+   *
+   * @param timestamp - The current timestamp.
+   */
   #animateNeuralNetwork(timestamp: number) {
     this.networkMap.animate(timestamp, this.carWorld.getBestCarBrain());
   }
 
+  /**
+   * Animates the world.
+   *
+   * @param timestamp - The current timestamp.
+   */
   #animateWorld(timestamp: number) {
     this.viewPort.reset();
     if (this.world.graph.hash() != this.oldGraphHash && this.generate) {
@@ -116,11 +151,17 @@ export default class UI {
     this.tools[this.currentMode].editor?.display();
   }
 
+  /**
+   * Closes the OSM panel by hiding it.
+   */
   #closeOsmPanel() {
     const osmPanel = document.getElementById("osmPanel") as HTMLDivElement;
     osmPanel.style.display = "none";
   }
 
+  /**
+   * Creates event listeners for the UI tools.
+   */
   #createToolListeners(): void {
     document.getElementById("btnDispose")?.addEventListener("click", () => this.#dispose());
     document.getElementById("btnSave")?.addEventListener("click", () => this.#save());
@@ -140,6 +181,10 @@ export default class UI {
     this.tools["target"].button?.addEventListener("click", () => this.#setMode("target"));
   }
 
+  /**
+   * Creates the world tools.
+   * @returns The tools object containing buttons and editors.
+   */
   #createWorldTools(): Tools {
     const tools: Tools = {
       drive: { button: document.getElementById("btnDrive") as HTMLButtonElement, editor: new CarWorld(this.viewPort, this.world, { NoOfCars: 100 }) },
@@ -155,6 +200,9 @@ export default class UI {
     return tools;
   }
 
+  /**
+   * Disables all editors in the UI.
+   */
   #disableEditors() {
     for (const tool of Object.values(this.tools)) {
       tool.button.style.backgroundColor = "gray";
@@ -163,11 +211,18 @@ export default class UI {
     }
   }
 
+  /**
+   * Disposes the UI component.
+   */
   #dispose() {
     (this.tools["graph"].editor as GraphEditor)?.dispose();
     this.world.markings.length = 0;
   }
 
+  /**
+   * Loads the world from local storage or creates a new world if no data is found.
+   * @returns The loaded world.
+   */
   #load() {
     const info = window.localStorage.getItem("world");
     if (!info) {
@@ -176,11 +231,19 @@ export default class UI {
     return World.load(info);
   }
 
+  /**
+   * Toggles the display of the OSM panel.
+   */
   #openOsmPanel() {
     const osmPanel = document.getElementById("osmPanel") as HTMLDivElement;
     osmPanel.style.display = osmPanel.style.display == "none" ? "block" : "none";
   }
 
+  /**
+   * Parses OSM data based on the form input and generates a world file.
+   * @private
+   * @async
+   */
   async #parseOsmData() {
     const osmData = document.getElementById("osmForm") as HTMLFormElement;
     const formData = new FormData(osmData);
@@ -199,21 +262,22 @@ export default class UI {
       trunk: (formData.get("trunk") as unknown as boolean) ? true : false,
     };
 
-    const options2 = {
-      distance: 3,
-      lat: 50.1098861,
-      lon: 8.7058685,
-      motorway: true,
-      primary: true,
-      secondary: true,
-      tertiary: false,
-      timeOut: 100,
-      trunk: true,
-      scale: 1,
-      distanceThreshold: 10,
-    };
+    // const options2 = {
+    //   distance: 3,
+    //   lat: 50.1098861,
+    //   lon: 8.7058685,
+    //   motorway: true,
+    //   primary: true,
+    //   secondary: true,
+    //   tertiary: false,
+    //   timeOut: 100,
+    //   trunk: true,
+    //   scale: 1,
+    //   distanceThreshold: 10,
+    // };
+
     const osm = new OSM(this.viewPort, this.world);
-    const data = await osm.getData(options2);
+    const data = await osm.getData(options);
     const worker = new Worker(new URL("./workerGenerateWorld.ts", import.meta.url), {
       type: "module",
     });
@@ -229,6 +293,9 @@ export default class UI {
     this.#closeOsmPanel();
   }
 
+  /**
+   * Saves the current state of the world and downloads it as a JSON file.
+   */
   #save() {
     this.world.zoom = this.viewPort.zoom;
     this.world.offset = this.viewPort.offset;
@@ -240,6 +307,10 @@ export default class UI {
     this.world.saveToLocalStorage("world");
   }
 
+  /**
+   * Sets the mode of the UI.
+   * @param mode The mode to set.
+   */
   #setMode(mode: Mode) {
     this.#disableEditors();
     this.tools[mode].button.style.backgroundColor = "white";
@@ -248,6 +319,9 @@ export default class UI {
     this.currentMode = mode;
   }
 
+  /**
+   * Toggles the generate flag and updates the style of the "btnGenerate" element accordingly.
+   */
   #toggleGenerate() {
     this.generate = !this.generate;
     document.getElementById("btnGenerate")?.setAttribute("style", "background-color: " + (this.generate ? "green" : "red"));
