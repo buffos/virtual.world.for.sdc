@@ -12,3 +12,5 @@ The course can be found [here](https://www.youtube.com/watch?v=wH2aNJxltus&list=
 5. The map is saved in a file and then can be loaded from disk. The work is done in a background worker.
 6. Minimap and NetworkMap are a separate UI module. Trying to remove dependence on constructor variables that can get out of sync when the reference is lost.
 7. A generate on/off button to stop world generation to make editing faster.
+8. Added bounded box intersection logic. This speeds up things a lot, especially in editing mode.
+9. Changed logic to detect if a point is inside a polygon or outside, based on the article [here](https://www.baeldung.com/cs/geofencing-point-inside-polygon). Its much faster and computationally less expensive.
