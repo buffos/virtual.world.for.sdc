@@ -1,5 +1,5 @@
 export default interface Editor {
-  disable(): void;
-  display(): void;
-  enable(): void;
+  disable(arg?: any): void;
+  display(arg?: any): void;
+  enable(arg?: any): void;
 }

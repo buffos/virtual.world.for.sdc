@@ -38,6 +38,7 @@ export interface LocalStoragePolygon {
 }
 
 export interface LocalStorageSegment {
+  oneWay: boolean;
   p1: LocalStoragePoint;
   p2: LocalStoragePoint;
 }

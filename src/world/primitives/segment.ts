@@ -15,12 +15,28 @@ interface SegmentDrawOptions {
 }
 
 export default class Segment {
+  public oneWay: boolean;
   public p1: Point;
   public p2: Point;
 
-  constructor(p1: Point, p2: Point) {
+  constructor(p1: Point, p2: Point, oneWay: boolean = false) {
     this.p1 = p1;
     this.p2 = p2;
+    this.oneWay = oneWay;
+  }
+
+  /**
+   * Creates an array of segments from an array of points.
+   *
+   * @param points - The array of points.
+   * @returns An array of segments.
+   */
+  public static createSegmentsFromPoints(points: Point[]): Segment[] {
+    const segments: Segment[] = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      segments.push(new Segment(points[i], points[i + 1]));
+    }
+    return segments;
   }
 
   /**
@@ -65,7 +81,7 @@ export default class Segment {
    * @returns A new Segment object.
    */
   public static load(data: LocalStorageSegment): Segment {
-    return new Segment(Point.load(data.p1), Point.load(data.p2));
+    return new Segment(Point.load(data.p1), Point.load(data.p2), data.oneWay);
   }
 
   /**
@@ -113,6 +129,7 @@ export default class Segment {
     ctx.beginPath();
     ctx.lineWidth = width;
     ctx.strokeStyle = color;
+    if (this.oneWay) ctx.setLineDash([4, 4]);
     ctx.setLineDash(dash);
     ctx.lineCap = cap;
     ctx.moveTo(this.p1.x, this.p1.y);

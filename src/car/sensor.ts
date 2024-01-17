@@ -1,18 +1,16 @@
-import { Intersection, getIntersection, lerp } from "../math/utils";
+import { Intersection, getIntersection, lerp } from "../utils/utils";
 import { Reading } from "../models/carTypes";
 import Point from "../world/primitives/point";
 import Segment from "../world/primitives/segment";
 import Car from "./car";
 
 export default class Sensor {
-  car: Car;
   rayCount: number = 5;
   rayLength: number = 300;
   raySpread: number = Math.PI / 2;
   rays: Segment[] = [];
   readings: Reading[] = [];
-  constructor(car: Car) {
-    this.car = car;
+  constructor() {
     this.rayCount = 5;
     this.rayLength = 300;
     this.raySpread = Math.PI / 2;
@@ -21,7 +19,7 @@ export default class Sensor {
     this.readings = [];
   }
 
-  #castRays() {
+  #castRays(car: Car) {
     this.rays = [];
     for (let i = 0; i < this.rayCount; i++) {
       const rayAngle =
@@ -29,8 +27,8 @@ export default class Sensor {
           this.raySpread / 2,
           -this.raySpread / 2,
           this.rayCount == 1 ? 0.5 : i / (this.rayCount - 1) // for 1 ray just set one in the middle.
-        ) + this.car.angle;
-      const start = this.car.center;
+        ) + car.angle;
+      const start = car.center;
       const end = Point.translate(start, rayAngle, this.rayLength);
       this.rays.push(new Segment(start, end));
     }
@@ -55,8 +53,8 @@ export default class Sensor {
     return touches.find((e) => e.offset == minOffset); // find the one with the smallest offset.
   }
 
-  update(roadBorders: Segment[], trafficCars: Car[]) {
-    this.#castRays();
+  update(car: Car, roadBorders: Segment[], trafficCars: Car[]) {
+    this.#castRays(car);
     this.readings = [];
     for (const ray of this.rays) {
       this.readings.push(this.#getReading(ray, roadBorders, trafficCars));

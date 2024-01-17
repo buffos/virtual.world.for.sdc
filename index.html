@@ -8,6 +8,7 @@
   </head>
   <body>
     <canvas id="worldCanvas"></canvas>
+
     <div id="verticalButtons">
       <button id="btnDispose">🗑️</button>
       <button id="btnSave">💾</button>
@@ -15,6 +16,8 @@
         📁
         <input type="file" id="fileInput" accept=".world" />
       </label>
+      <button id="openOsmPanel">🗺️</button>
+      <button id="btnGenerate">⚡</button>
       &nbsp;
       <button id="btnDrive">🎮</button>
       <button id="btnGraphics">🌐</button>
@@ -26,7 +29,96 @@
       <button id="btnStart">🚙</button>
       <button id="btnTarget">🎯</button>
     </div>
-    <canvas id="networkCanvas"></canvas>
+    <div id="osmPanel" style="display: none">
+      <div class="container">
+        <form class="form" id="osmForm">
+          <div class="entry">
+            <label for="osmlat">latitude: </label>
+            <input
+              type="number"
+              id="osmlat"
+              placeholder="give latitude of the map center"
+              name="latitude"
+            />
+          </div>
+          <div class="entry">
+            <label for="osmlon">longitude: </label
+            ><input
+              type="number"
+              id="osmlon"
+              placeholder="give longitude of the map center"
+              name="longitude"
+            />
+          </div>
+          <div class="entry">
+            <label for="osmradius">radius (km): </label
+            ><input
+              type="number"
+              id="osmradius"
+              placeholder="how much area to load (in km)"
+              name="radius"
+              value="1"
+            />
+          </div>
+          <div class="entry">
+            <label for="osmscale">scale: </label
+            ><input
+              type="number"
+              id="oscmscale"
+              placeholder="default 1px = 1m"
+              name="scale"
+              value="1"
+            />
+          </div>
+          <div class="entry">
+            <label for="osmthreshold">threshold (m): </label
+            ><input
+              type="number"
+              id="osmthreshold"
+              placeholder="simplification threshold (in meters)"
+              name="distanceThreshold"
+              value="0"
+            />
+          </div>
+          <div class="checkboxes">
+            <div class="entry">
+              <label for="osmmotorway">Motorway</label>
+              <input type="checkbox" id="osmmotorway" name="motorway" checked />
+            </div>
+            <div class="entry">
+              <label for="osmtrunk">Trunk</label>
+              <input type="checkbox" id="osmtrunk" name="trunk" checked />
+            </div>
+            <div class="entry">
+              <label for="osmprimary">Primary</label>
+              <input type="checkbox" id="osmprimary" name="primary" checked />
+            </div>
+            <div class="entry">
+              <label for="osmsecondary">Secondary</label>
+              <input
+                type="checkbox"
+                id="osmsecondary"
+                name="secondary"
+                checked
+              />
+            </div>
+            <div class="entry">
+              <label for="osmtertiary">Tertiary</label>
+              <input type="checkbox" id="osmtertiary" name="tertiary" checked />
+            </div>
+          </div>
+        </form>
+
+        <div>
+          <button id="parseOsmData">✔️</button>
+          <button id="closeOsmPanel">❌</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <canvas id="networkCanvas"></canvas>
+      <canvas id="miniMapCanvas"></canvas>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

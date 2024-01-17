@@ -47,7 +47,7 @@ export default class Car {
     this.color = options.color ?? "blue";
 
     this.useBrain = options.controlType == "AI";
-    this.sensor = options.controlType != "DUMMY" ? new Sensor(this) : null;
+    this.sensor = options.controlType != "DUMMY" ? new Sensor() : null;
     this.brain = options.controlType != "DUMMY" ? new NeuralNetwork([this.sensor!.rayCount, 6, 4]) : null; // we have 4 output neurons: forward, reverse, left, right
     this.controls = new Controls(options.controlType);
     this.img = new Image();
@@ -86,7 +86,7 @@ export default class Car {
       this.damaged = this.#assessDamage(roadBorders, trafficCars);
     }
     if (this.sensor) {
-      this.sensor.update(roadBorders, trafficCars);
+      this.sensor.update(this, roadBorders, trafficCars);
       const offsets = this.sensor.readings.map((s) => (s == null ? 0 : 1 - s.offset));
       if (this.useBrain && this.brain) {
         const neuralNetworkOutput = NeuralNetwork.feedForward(offsets, this.brain);

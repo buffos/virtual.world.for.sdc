@@ -1,4 +1,4 @@
-import { lerp } from "../../math/utils";
+import { lerp } from "../../utils/utils";
 import { LocalStoragePoint } from "../../models/worldData";
 
 interface PointDrawOptions {

@@ -1,4 +1,4 @@
-import { clamp } from "../math/utils";
+import { clamp } from "../utils/utils";
 import Point from "./primitives/point";
 
 export default class ViewPort {
@@ -16,6 +16,14 @@ export default class ViewPort {
     this.center = new Point(this.canvas.width / 2, this.canvas.height / 2); // center is the middle of the canvas
     this.offset = initialOffset ?? Point.scaleVector(this.center, -1); // move the center to the origin because we moved the canvas 0,0 to the center and mouse events are from 0,0
     this.#addEventListeners();
+  }
+
+  /**
+   * Gets the view point of the viewport.
+   * @returns The view point as a Point object.
+   */
+  public get viewPoint(): Point {
+    return Point.scaleVector(this.getOffset(), -1);
   }
 
   /**

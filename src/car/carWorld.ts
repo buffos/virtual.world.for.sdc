@@ -20,12 +20,10 @@ export default class CarWorld implements Editor {
   public cars: Car[];
   public ctx: CanvasRenderingContext2D;
   public trafficCars: Car[];
-  public world: World;
 
   constructor(viewPort: ViewPort, world: World, options: CarWorldOptions) {
     this.N = options.NoOfCars;
     this.ctx = viewPort.ctx;
-    this.world = world;
     this.cars = this.#generateCars(world.markings);
     this.trafficCars = this.#generateTrafficCars();
   }
@@ -46,8 +44,8 @@ export default class CarWorld implements Editor {
     }
   }
 
-  public enable(): void {
-    this.cars = this.#generateCars(this.world.markings);
+  public enable(world: World): void {
+    this.cars = this.#generateCars(world.markings);
     this.trafficCars = this.#generateTrafficCars();
     this.enabled = true;
   }

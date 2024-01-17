@@ -4,8 +4,8 @@ import Tree from "./items/tree";
 import Light from "./markings/light";
 import Marking from "./markings/marking";
 import { loadMarking } from "./markings/markingLoader";
-import Graph from "../math/graph";
-import { lerp } from "../math/utils";
+import Graph from "./math/graph";
+import { lerp } from "../utils/utils";
 import { WorldData } from "../models/worldData";
 import Envelope from "./primitives/envelope";
 import Point from "./primitives/point";
@@ -54,13 +54,12 @@ export default class World {
     this.generate();
   }
 
-  public static load(name: string = "world"): World {
-    const info = window.localStorage.getItem(name);
+  public static load(data: string = "world"): World {
     const world = new World(new Graph([], []), { roadWidth: 100, roundness: 5 });
-    if (!info) {
+    if (!data) {
       return world;
     }
-    const worldData: WorldData = JSON.parse(info);
+    const worldData: WorldData = JSON.parse(data);
     world.graph = Graph.load(worldData.graph);
     world.buildingMinLength = worldData.buildingMinLength;
     world.buildingWidth = worldData.buildingWidth;
@@ -86,7 +85,7 @@ export default class World {
    * @param ctx - The canvas rendering context.
    * @param viewPoint - The point representing the current view point.
    */
-  public draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
+  public draw(ctx: CanvasRenderingContext2D, viewPoint: Point, renderRadius: number = 1000) {
     for (const envelope of this.envelopes) {
       envelope.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
     }
@@ -101,7 +100,8 @@ export default class World {
 
     this.carWorld?.display();
 
-    const items = [...this.buildings, ...this.trees];
+    // keep only items within the render radius
+    const items = [...this.buildings, ...this.trees].filter((item) => Polygon.distanceToPoint(item.base, viewPoint) < renderRadius);
     // we sort the items by their distance to the view point so that the closest item is drawn last
     items.sort((a, b) => Polygon.distanceToPoint(b.base, viewPoint) - Polygon.distanceToPoint(a.base, viewPoint));
     for (const item of items) {

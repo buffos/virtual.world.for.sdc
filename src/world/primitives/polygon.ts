@@ -1,4 +1,4 @@
-import { getIntersection, getRandomColor } from "../../math/utils";
+import { getIntersection, getRandomColor } from "../../utils/utils";
 import { LocalStoragePolygon } from "../../models/worldData";
 import Point from "./point";
 import Segment from "./segment";
