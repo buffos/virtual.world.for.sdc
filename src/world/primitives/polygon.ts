@@ -42,7 +42,7 @@ export default class Polygon {
    * @param point The point to check.
    * @returns True if the point is contained within the polygon, false otherwise.
    */
-  public static containsPoint(poly: Polygon, point: Point): boolean {
+  public static containsPoint2(poly: Polygon, point: Point): boolean {
     const outerPoint = new Point(-1000, -1000);
     let intersectionsCount = 0;
     for (const segment of poly.segments) {
@@ -52,6 +52,25 @@ export default class Polygon {
       }
     }
     return intersectionsCount % 2 == 1;
+  }
+
+  public static containsPoint(poly: Polygon, point: Point): boolean {
+    // https://www.baeldung.com/cs/geofencing-point-inside-polygon
+    // do a horizontal line check. First check if py is not between the y coordinates of the polygon
+    const minY = Math.min(...poly.points.map((p) => p.y));
+    const maxY = Math.max(...poly.points.map((p) => p.y));
+    if (point.y < minY || point.y > maxY) {
+      return false;
+    }
+    // now for each segment, check if the point is on the left side of the segment
+    let intersects = false;
+    for (const segment of poly.segments) {
+      const sx = ((segment.p2.x - segment.p1.x) * (point.y - segment.p1.y)) / (segment.p2.y - segment.p1.y) + segment.p1.x;
+      if (sx > point.x) {
+        intersects = !intersects;
+      }
+    }
+    return intersects;
   }
 
   /**

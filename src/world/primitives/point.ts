@@ -1,5 +1,6 @@
 import { lerp } from "../../utils/utils";
 import { LocalStoragePoint } from "../../models/worldData";
+import { BoundingBox } from "./boundingBox";
 
 interface PointDrawOptions {
   cap?: CanvasLineCap;
@@ -179,5 +180,14 @@ export default class Point {
    */
   public equals(point: Point) {
     return this.x === point.x && this.y === point.y;
+  }
+
+  static boundingBox(p1: Point, p2: Point): BoundingBox {
+    return {
+      xmin: Math.min(p1.x, p2.x),
+      xmax: Math.max(p1.x, p2.x),
+      ymin: Math.min(p1.y, p2.y),
+      ymax: Math.max(p1.y, p2.y),
+    };
   }
 }

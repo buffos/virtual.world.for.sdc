@@ -1,4 +1,5 @@
 import { LocalStorageSegment } from "../../models/worldData";
+import { BoundingBox } from "./boundingBox";
 import Point from "./point";
 
 interface PointProjection {
@@ -23,6 +24,20 @@ export default class Segment {
     this.p1 = p1;
     this.p2 = p2;
     this.oneWay = oneWay;
+  }
+
+  /**
+   * Calculates the bounding box of a segment.
+   * @param segment - The segment to calculate the bounding box for.
+   * @returns The bounding box object containing the minimum and maximum x and y coordinates.
+   */
+  public static BoundingBox(segment: Segment): BoundingBox {
+    return {
+      xmin: Math.min(segment.p1.x, segment.p2.x),
+      xmax: Math.max(segment.p1.x, segment.p2.x),
+      ymin: Math.min(segment.p1.y, segment.p2.y),
+      ymax: Math.max(segment.p1.y, segment.p2.y),
+    };
   }
 
   /**
@@ -106,6 +121,19 @@ export default class Segment {
       valid: true,
     };
     return projection;
+  }
+
+  /**
+   * Calculates the bounding box of the segment.
+   * @returns The bounding box of the segment.
+   */
+  public boundingBox(): BoundingBox {
+    return {
+      xmin: Math.min(this.p1.x, this.p2.x),
+      xmax: Math.max(this.p1.x, this.p2.x),
+      ymin: Math.min(this.p1.y, this.p2.y),
+      ymax: Math.max(this.p1.y, this.p2.y),
+    };
   }
 
   /**

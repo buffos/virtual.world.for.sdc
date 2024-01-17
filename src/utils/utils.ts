@@ -1,3 +1,5 @@
+import { BoundingBox, bbIntersect } from "../world/primitives/boundingBox";
+
 export interface Intersection {
   offset: number;
   x: number;
@@ -13,6 +15,15 @@ export function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
+function bb(p1: Point, p2: Point): BoundingBox {
+  return {
+    xmin: Math.min(p1.x, p2.x),
+    xmax: Math.max(p1.x, p2.x),
+    ymin: Math.min(p1.y, p2.y),
+    ymax: Math.max(p1.y, p2.y),
+  };
+}
+
 /**
  * Clamps a value between a minimum and maximum range.
  * @param val The value to be clamped.
@@ -22,6 +33,9 @@ export function lerp(a: number, b: number, t: number): number {
  */
 export const clamp = (val: number, min: number, max: number): number => Math.max(Math.min(val, max), min);
 export const getIntersection = (p1: Point, p2: Point, p3: Point, p4: Point): Intersection | null => {
+  const bb1 = bb(p1, p2);
+  const bb2 = bb(p3, p4);
+  if (!bbIntersect(bb1, bb2)) return null; // we first do a fast check
   const A = { x: p2.x - p1.x, y: p2.y - p1.y };
   const B = { x: p3.x - p4.x, y: p3.y - p4.y };
   const C = { x: p1.x - p3.x, y: p1.y - p3.y };
